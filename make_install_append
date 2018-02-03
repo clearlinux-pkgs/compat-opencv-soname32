@@ -1,0 +1,1 @@
+rm -fr %{buildroot}/usr/share/OpenCV/samples/python/__pycache__
