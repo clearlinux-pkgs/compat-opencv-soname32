@@ -248,7 +248,7 @@
 /usr/lib64/libopencv_videoio.so
 /usr/lib64/libopencv_videostab.so
 /usr/lib64/pkgconfig/opencv.pc
-/usr/lib64/python2.7/site-packages
-/usr/lib64/python2.7/site-packages/cv2.so
-/usr/lib64/python3.6/site-packages
-/usr/lib64/python3.6/site-packages/cv2.cpython-36m-x86_64-linux-gnu.so
+/usr/lib/python2.7/site-packages/
+/usr/lib/python2.7/site-packages/cv2.so
+/usr/lib/python3.6/site-packages/
+/usr/lib/python3.6/site-packages/cv2.cpython-36m-x86_64-linux-gnu.so
