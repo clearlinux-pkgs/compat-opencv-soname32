@@ -4,16 +4,18 @@
 #
 Name     : compat-opencv-soname32
 Version  : 3.2.0
-Release  : 7
+Release  : 8
 URL      : https://github.com/opencv/opencv/archive/3.2.0.tar.gz
 Source0  : https://github.com/opencv/opencv/archive/3.2.0.tar.gz
 Summary  : Open Source Computer Vision Library
 Group    : Development/Tools
 License  : BSD-3-Clause BSD-3-Clause-Clear JasPer-2.0 LGPL-2.1 Libpng libtiff
 Requires: compat-opencv-soname32-bin
+Requires: compat-opencv-soname32-legacypython
+Requires: compat-opencv-soname32-python3
 Requires: compat-opencv-soname32-lib
-Requires: compat-opencv-soname32-python
 Requires: compat-opencv-soname32-data
+Requires: compat-opencv-soname32-python
 BuildRequires : beignet-dev
 BuildRequires : ccache
 BuildRequires : cmake
@@ -75,6 +77,15 @@ Provides: compat-opencv-soname32-devel
 dev components for the compat-opencv-soname32 package.
 
 
+%package legacypython
+Summary: legacypython components for the compat-opencv-soname32 package.
+Group: Default
+Requires: python-core
+
+%description legacypython
+legacypython components for the compat-opencv-soname32 package.
+
+
 %package lib
 Summary: lib components for the compat-opencv-soname32 package.
 Group: Libraries
@@ -87,9 +98,20 @@ lib components for the compat-opencv-soname32 package.
 %package python
 Summary: python components for the compat-opencv-soname32 package.
 Group: Default
+Requires: compat-opencv-soname32-legacypython
+Requires: compat-opencv-soname32-python3
 
 %description python
 python components for the compat-opencv-soname32 package.
+
+
+%package python3
+Summary: python3 components for the compat-opencv-soname32 package.
+Group: Default
+Requires: python3-core
+
+%description python3
+python3 components for the compat-opencv-soname32 package.
 
 
 %prep
@@ -100,7 +122,7 @@ export http_proxy=http://127.0.0.1:9/
 export https_proxy=http://127.0.0.1:9/
 export no_proxy=localhost,127.0.0.1,0.0.0.0
 export LANG=C
-export SOURCE_DATE_EPOCH=1517702381
+export SOURCE_DATE_EPOCH=1517703057
 mkdir clr-build
 pushd clr-build
 cmake .. -G "Unix Makefiles" -DCMAKE_INSTALL_PREFIX=/usr -DBUILD_SHARED_LIBS:BOOL=ON -DLIB_INSTALL_DIR:PATH=/usr/lib64 -DCMAKE_AR=/usr/bin/gcc-ar -DLIB_SUFFIX=64 -DCMAKE_BUILD_TYPE=RelWithDebInfo -DCMAKE_RANLIB=/usr/bin/gcc-ranlib -DWITH_FFMPEG=OFF -DWITH_1394=OFF -DWITH_GSTREAMER=OFF -DWITH_IPP=OFF -DWITH_JASPER=OFF -DWITH_WEBP=OFF -DWITH_OPENEXR=OFF -DWITH_TIFF=OFF -DENABLE_SSE42=ON -DCMAKE_LIBRARY_PATH=/lib64 -DWITH_TBB=on -DWITH_OPENMP=ON -DWITH_VA=ON -DLIB_SUFFIX=64 -DCMAKE_BUILD_TYPE=ReleaseWithDebInfo -DWITH_GSTREAMER=1 -DINSTALL_PYTHON_EXAMPLES=1
@@ -108,12 +130,14 @@ make  %{?_smp_mflags}
 popd
 
 %install
-export SOURCE_DATE_EPOCH=1517702381
+export SOURCE_DATE_EPOCH=1517703057
 rm -rf %{buildroot}
 pushd clr-build
 %make_install
 popd
 ## make_install_append content
+mkdir -p %{buildroot}/usr/lib
+mv %{buildroot}/usr/lib64/python*  %{buildroot}/usr/lib
 rm -fr %{buildroot}/usr/share/OpenCV/samples/
 ## make_install_append end
 
@@ -378,6 +402,10 @@ rm -fr %{buildroot}/usr/share/OpenCV/samples/
 %exclude /usr/lib64/libopencv_videostab.so
 %exclude /usr/lib64/pkgconfig/opencv.pc
 
+%files legacypython
+%defattr(-,root,root,-)
+/usr/lib/python2*/*
+
 %files lib
 %defattr(-,root,root,-)
 /usr/lib64/libopencv_calib3d.so.3.2
@@ -415,5 +443,7 @@ rm -fr %{buildroot}/usr/share/OpenCV/samples/
 
 %files python
 %defattr(-,root,root,-)
-%exclude /usr/lib64/python2.7/site-packages/cv2.so
-%exclude /usr/lib64/python3.6/site-packages/cv2.cpython-36m-x86_64-linux-gnu.so
+
+%files python3
+%defattr(-,root,root,-)
+/usr/lib/python3*/*

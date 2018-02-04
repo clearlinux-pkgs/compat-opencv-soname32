@@ -1,1 +1,3 @@
+mkdir -p %{buildroot}/usr/lib
+mv %{buildroot}/usr/lib64/python*  %{buildroot}/usr/lib
 rm -fr %{buildroot}/usr/share/OpenCV/samples/
