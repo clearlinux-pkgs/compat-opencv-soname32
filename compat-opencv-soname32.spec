@@ -4,7 +4,7 @@
 #
 Name     : compat-opencv-soname32
 Version  : 3.2.0
-Release  : 13
+Release  : 14
 URL      : https://github.com/opencv/opencv/archive/3.2.0.tar.gz
 Source0  : https://github.com/opencv/opencv/archive/3.2.0.tar.gz
 Summary  : Open Source Computer Vision Library
