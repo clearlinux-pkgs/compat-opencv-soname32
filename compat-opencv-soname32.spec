@@ -4,7 +4,7 @@
 #
 Name     : compat-opencv-soname32
 Version  : 3.2.0
-Release  : 24
+Release  : 25
 URL      : https://github.com/opencv/opencv/archive/3.2.0.tar.gz
 Source0  : https://github.com/opencv/opencv/archive/3.2.0.tar.gz
 Summary  : Open Source Computer Vision Library
@@ -133,7 +133,7 @@ export http_proxy=http://127.0.0.1:9/
 export https_proxy=http://127.0.0.1:9/
 export no_proxy=localhost,127.0.0.1,0.0.0.0
 export LANG=C
-export SOURCE_DATE_EPOCH=1560287002
+export SOURCE_DATE_EPOCH=1560293113
 mkdir -p clr-build
 pushd clr-build
 export GCC_IGNORE_WERROR=1
@@ -149,7 +149,7 @@ make  %{?_smp_mflags} VERBOSE=1
 popd
 
 %install
-export SOURCE_DATE_EPOCH=1560287002
+export SOURCE_DATE_EPOCH=1560293113
 rm -rf %{buildroot}
 mkdir -p %{buildroot}/usr/share/package-licenses/compat-opencv-soname32
 cp 3rdparty/ffmpeg/license.txt %{buildroot}/usr/share/package-licenses/compat-opencv-soname32/3rdparty_ffmpeg_license.txt
@@ -481,4 +481,4 @@ rm -fr %{buildroot}/usr/share/OpenCV/samples/
 
 %files python3
 %defattr(-,root,root,-)
-/usr/lib/python3*/*
+%exclude /usr/lib/python3.7/site-packages/cv2.cpython-37m-x86_64-linux-gnu.so
