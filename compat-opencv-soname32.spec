@@ -4,26 +4,29 @@
 #
 Name     : compat-opencv-soname32
 Version  : 3.2.0
-Release  : 23
+Release  : 24
 URL      : https://github.com/opencv/opencv/archive/3.2.0.tar.gz
 Source0  : https://github.com/opencv/opencv/archive/3.2.0.tar.gz
 Summary  : Open Source Computer Vision Library
 Group    : Development/Tools
 License  : BSD-3-Clause BSD-3-Clause-Clear JasPer-2.0 LGPL-2.1 Libpng libtiff
-Requires: compat-opencv-soname32-bin
-Requires: compat-opencv-soname32-legacypython
-Requires: compat-opencv-soname32-python3
-Requires: compat-opencv-soname32-lib
-Requires: compat-opencv-soname32-data
-Requires: compat-opencv-soname32-python
+Requires: compat-opencv-soname32-bin = %{version}-%{release}
+Requires: compat-opencv-soname32-data = %{version}-%{release}
+Requires: compat-opencv-soname32-lib = %{version}-%{release}
+Requires: compat-opencv-soname32-license = %{version}-%{release}
+Requires: compat-opencv-soname32-python = %{version}-%{release}
+Requires: compat-opencv-soname32-python3 = %{version}-%{release}
 BuildRequires : beignet-dev
+BuildRequires : buildreq-cmake
 BuildRequires : ccache
 BuildRequires : cmake
 BuildRequires : doxygen
 BuildRequires : eigen-dev
+BuildRequires : gdal-dev
 BuildRequires : glib-dev
 BuildRequires : gstreamer-dev
 BuildRequires : gtk3-dev
+BuildRequires : libX11-dev libICE-dev libSM-dev libXau-dev libXcomposite-dev libXcursor-dev libXdamage-dev libXdmcp-dev libXext-dev libXfixes-dev libXft-dev libXi-dev libXinerama-dev libXi-dev libXmu-dev libXpm-dev libXrandr-dev libXrender-dev libXres-dev libXScrnSaver-dev libXt-dev libXtst-dev libXv-dev libXxf86misc-dev libXxf86vm-dev
 BuildRequires : libjpeg-turbo-dev
 BuildRequires : libva-dev
 BuildRequires : libva-intel-driver
@@ -32,6 +35,9 @@ BuildRequires : mesa-dev
 BuildRequires : numpy
 BuildRequires : ocl-icd-dev
 BuildRequires : openblas
+BuildRequires : openjdk9-dev
+BuildRequires : pkg-config
+BuildRequires : pkgconfig(clp)
 BuildRequires : pkgconfig(gstreamer-video-1.0)
 BuildRequires : pkgconfig(libpng)
 BuildRequires : python-dev
@@ -39,6 +45,8 @@ BuildRequires : python3-dev
 BuildRequires : tbb-dev
 BuildRequires : v4l-utils-dev
 BuildRequires : zlib-dev
+Patch1: cve-2017-12600.patch
+Patch2: CVE-2017-1000450.patch
 
 %description
 A demo of the Java wrapper for OpenCV with two examples:
@@ -51,7 +59,8 @@ Please feel free to contribute code examples in Scala or Java, or any JVM langua
 %package bin
 Summary: bin components for the compat-opencv-soname32 package.
 Group: Binaries
-Requires: compat-opencv-soname32-data
+Requires: compat-opencv-soname32-data = %{version}-%{release}
+Requires: compat-opencv-soname32-license = %{version}-%{release}
 
 %description bin
 bin components for the compat-opencv-soname32 package.
@@ -68,38 +77,38 @@ data components for the compat-opencv-soname32 package.
 %package dev
 Summary: dev components for the compat-opencv-soname32 package.
 Group: Development
-Requires: compat-opencv-soname32-lib
-Requires: compat-opencv-soname32-bin
-Requires: compat-opencv-soname32-data
-Provides: compat-opencv-soname32-devel
+Requires: compat-opencv-soname32-lib = %{version}-%{release}
+Requires: compat-opencv-soname32-bin = %{version}-%{release}
+Requires: compat-opencv-soname32-data = %{version}-%{release}
+Provides: compat-opencv-soname32-devel = %{version}-%{release}
+Requires: compat-opencv-soname32 = %{version}-%{release}
 
 %description dev
 dev components for the compat-opencv-soname32 package.
 
 
-%package legacypython
-Summary: legacypython components for the compat-opencv-soname32 package.
-Group: Default
-Requires: python-core
-
-%description legacypython
-legacypython components for the compat-opencv-soname32 package.
-
-
 %package lib
 Summary: lib components for the compat-opencv-soname32 package.
 Group: Libraries
-Requires: compat-opencv-soname32-data
+Requires: compat-opencv-soname32-data = %{version}-%{release}
+Requires: compat-opencv-soname32-license = %{version}-%{release}
 
 %description lib
 lib components for the compat-opencv-soname32 package.
 
 
+%package license
+Summary: license components for the compat-opencv-soname32 package.
+Group: Default
+
+%description license
+license components for the compat-opencv-soname32 package.
+
+
 %package python
 Summary: python components for the compat-opencv-soname32 package.
 Group: Default
-Requires: compat-opencv-soname32-legacypython
-Requires: compat-opencv-soname32-python3
+Requires: compat-opencv-soname32-python3 = %{version}-%{release}
 
 %description python
 python components for the compat-opencv-soname32 package.
@@ -116,30 +125,49 @@ python3 components for the compat-opencv-soname32 package.
 
 %prep
 %setup -q -n opencv-3.2.0
+%patch1 -p1
+%patch2 -p1
 
 %build
 export http_proxy=http://127.0.0.1:9/
 export https_proxy=http://127.0.0.1:9/
 export no_proxy=localhost,127.0.0.1,0.0.0.0
 export LANG=C
-export SOURCE_DATE_EPOCH=1517705879
-mkdir clr-build
+export SOURCE_DATE_EPOCH=1560287002
+mkdir -p clr-build
 pushd clr-build
-cmake .. -G "Unix Makefiles" -DCMAKE_INSTALL_PREFIX=/usr -DBUILD_SHARED_LIBS:BOOL=ON -DLIB_INSTALL_DIR:PATH=/usr/lib64 -DCMAKE_AR=/usr/bin/gcc-ar -DLIB_SUFFIX=64 -DCMAKE_BUILD_TYPE=RelWithDebInfo -DCMAKE_RANLIB=/usr/bin/gcc-ranlib -DWITH_FFMPEG=OFF -DWITH_1394=OFF -DWITH_GSTREAMER=OFF -DWITH_IPP=OFF -DWITH_JASPER=OFF -DWITH_WEBP=OFF -DWITH_OPENEXR=OFF -DWITH_TIFF=OFF -DENABLE_SSE42=ON -DCMAKE_LIBRARY_PATH=/lib64 -DWITH_TBB=on -DWITH_OPENMP=ON -DWITH_VA=ON -DLIB_SUFFIX=64 -DCMAKE_BUILD_TYPE=ReleaseWithDebInfo -DWITH_GSTREAMER=1 -DINSTALL_PYTHON_EXAMPLES=1
-make  %{?_smp_mflags}
+export GCC_IGNORE_WERROR=1
+export AR=gcc-ar
+export RANLIB=gcc-ranlib
+export NM=gcc-nm
+export CFLAGS="$CFLAGS -O3 -ffat-lto-objects -flto=4 -fstack-protector-strong -mzero-caller-saved-regs=used "
+export FCFLAGS="$CFLAGS -O3 -ffat-lto-objects -flto=4 -fstack-protector-strong -mzero-caller-saved-regs=used "
+export FFLAGS="$CFLAGS -O3 -ffat-lto-objects -flto=4 -fstack-protector-strong -mzero-caller-saved-regs=used "
+export CXXFLAGS="$CXXFLAGS -O3 -ffat-lto-objects -flto=4 -fstack-protector-strong -mzero-caller-saved-regs=used "
+%cmake .. -DWITH_FFMPEG=OFF -DWITH_1394=OFF -DWITH_GSTREAMER=OFF -DWITH_IPP=OFF -DWITH_JASPER=OFF -DWITH_WEBP=OFF -DWITH_OPENEXR=OFF -DWITH_TIFF=OFF -DENABLE_SSE42=ON -DCMAKE_LIBRARY_PATH=/lib64 -DWITH_TBB=on -DWITH_OPENMP=ON -DWITH_VA=ON -DLIB_SUFFIX=64 -DCMAKE_BUILD_TYPE=ReleaseWithDebInfo -DWITH_GSTREAMER=1 -DINSTALL_PYTHON_EXAMPLES=1
+make  %{?_smp_mflags} VERBOSE=1
 popd
 
 %install
-export SOURCE_DATE_EPOCH=1517705879
+export SOURCE_DATE_EPOCH=1560287002
 rm -rf %{buildroot}
+mkdir -p %{buildroot}/usr/share/package-licenses/compat-opencv-soname32
+cp 3rdparty/ffmpeg/license.txt %{buildroot}/usr/share/package-licenses/compat-opencv-soname32/3rdparty_ffmpeg_license.txt
+cp 3rdparty/jinja2/LICENSE %{buildroot}/usr/share/package-licenses/compat-opencv-soname32/3rdparty_jinja2_LICENSE
+cp 3rdparty/libjasper/LICENSE %{buildroot}/usr/share/package-licenses/compat-opencv-soname32/3rdparty_libjasper_LICENSE
+cp 3rdparty/libjasper/copyright %{buildroot}/usr/share/package-licenses/compat-opencv-soname32/3rdparty_libjasper_copyright
+cp 3rdparty/libpng/LICENSE %{buildroot}/usr/share/package-licenses/compat-opencv-soname32/3rdparty_libpng_LICENSE
+cp 3rdparty/libtiff/COPYRIGHT %{buildroot}/usr/share/package-licenses/compat-opencv-soname32/3rdparty_libtiff_COPYRIGHT
+cp 3rdparty/openexr/LICENSE %{buildroot}/usr/share/package-licenses/compat-opencv-soname32/3rdparty_openexr_LICENSE
+cp LICENSE %{buildroot}/usr/share/package-licenses/compat-opencv-soname32/LICENSE
 pushd clr-build
 %make_install
 popd
-## make_install_append content
+## install_append content
 mkdir -p %{buildroot}/usr/lib
 mv %{buildroot}/usr/lib64/python*  %{buildroot}/usr/lib
 rm -fr %{buildroot}/usr/share/OpenCV/samples/
-## make_install_append end
+## install_append end
 
 %files
 %defattr(-,root,root,-)
@@ -402,10 +430,6 @@ rm -fr %{buildroot}/usr/share/OpenCV/samples/
 %exclude /usr/lib64/libopencv_videostab.so
 %exclude /usr/lib64/pkgconfig/opencv.pc
 
-%files legacypython
-%defattr(-,root,root,-)
-%exclude /usr/lib/python2.7/site-packages/cv2.so
-
 %files lib
 %defattr(-,root,root,-)
 /usr/lib64/libopencv_calib3d.so.3.2
@@ -441,9 +465,20 @@ rm -fr %{buildroot}/usr/share/OpenCV/samples/
 /usr/lib64/libopencv_videostab.so.3.2
 /usr/lib64/libopencv_videostab.so.3.2.0
 
+%files license
+%defattr(0644,root,root,0755)
+/usr/share/package-licenses/compat-opencv-soname32/3rdparty_ffmpeg_license.txt
+/usr/share/package-licenses/compat-opencv-soname32/3rdparty_jinja2_LICENSE
+/usr/share/package-licenses/compat-opencv-soname32/3rdparty_libjasper_LICENSE
+/usr/share/package-licenses/compat-opencv-soname32/3rdparty_libjasper_copyright
+/usr/share/package-licenses/compat-opencv-soname32/3rdparty_libpng_LICENSE
+/usr/share/package-licenses/compat-opencv-soname32/3rdparty_libtiff_COPYRIGHT
+/usr/share/package-licenses/compat-opencv-soname32/3rdparty_openexr_LICENSE
+/usr/share/package-licenses/compat-opencv-soname32/LICENSE
+
 %files python
 %defattr(-,root,root,-)
 
 %files python3
 %defattr(-,root,root,-)
-%exclude /usr/lib/python3.6/site-packages/cv2.cpython-36m-x86_64-linux-gnu.so
+/usr/lib/python3*/*
