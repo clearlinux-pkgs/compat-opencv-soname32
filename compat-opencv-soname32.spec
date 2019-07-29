@@ -4,7 +4,7 @@
 #
 Name     : compat-opencv-soname32
 Version  : 3.2.0
-Release  : 26
+Release  : 27
 URL      : https://github.com/opencv/opencv/archive/3.2.0.tar.gz
 Source0  : https://github.com/opencv/opencv/archive/3.2.0.tar.gz
 Summary  : Open Source Computer Vision Library
@@ -16,7 +16,6 @@ Requires: compat-opencv-soname32-lib = %{version}-%{release}
 Requires: compat-opencv-soname32-license = %{version}-%{release}
 Requires: compat-opencv-soname32-python = %{version}-%{release}
 Requires: compat-opencv-soname32-python3 = %{version}-%{release}
-BuildRequires : beignet-dev
 BuildRequires : buildreq-cmake
 BuildRequires : ccache
 BuildRequires : cmake
@@ -35,6 +34,7 @@ BuildRequires : mesa-dev
 BuildRequires : numpy
 BuildRequires : ocl-icd-dev
 BuildRequires : openblas
+BuildRequires : opencl-headers-dev
 BuildRequires : openjdk9-dev
 BuildRequires : pkg-config
 BuildRequires : pkgconfig(clp)
@@ -49,12 +49,13 @@ Patch1: cve-2017-12600.patch
 Patch2: CVE-2017-1000450.patch
 
 %description
-A demo of the Java wrapper for OpenCV with two examples:
-1) feature detection and matching and
-2) face detection.
-The examples are coded in Scala and Java.
-Anyone familiar with Java should be able to read the Scala examples.
-Please feel free to contribute code examples in Scala or Java, or any JVM language.
+JasPer Readme
+*************
+This is the source code distribution for JasPer.  JasPer is a collection
+of software (i.e., a library and application programs) for the coding
+and manipulation of images.  This software can handle image data in a
+variety of formats.  One such format supported by JasPer is the JPEG-2000
+format defined in ISO/IEC 15444-1.
 
 %package bin
 Summary: bin components for the compat-opencv-soname32 package.
@@ -132,8 +133,8 @@ python3 components for the compat-opencv-soname32 package.
 export http_proxy=http://127.0.0.1:9/
 export https_proxy=http://127.0.0.1:9/
 export no_proxy=localhost,127.0.0.1,0.0.0.0
-export LANG=C
-export SOURCE_DATE_EPOCH=1560293113
+export LANG=C.UTF-8
+export SOURCE_DATE_EPOCH=1564436702
 mkdir -p clr-build
 pushd clr-build
 export GCC_IGNORE_WERROR=1
@@ -149,7 +150,7 @@ make  %{?_smp_mflags} VERBOSE=1
 popd
 
 %install
-export SOURCE_DATE_EPOCH=1560293113
+export SOURCE_DATE_EPOCH=1564436702
 rm -rf %{buildroot}
 mkdir -p %{buildroot}/usr/share/package-licenses/compat-opencv-soname32
 cp 3rdparty/ffmpeg/license.txt %{buildroot}/usr/share/package-licenses/compat-opencv-soname32/3rdparty_ffmpeg_license.txt
