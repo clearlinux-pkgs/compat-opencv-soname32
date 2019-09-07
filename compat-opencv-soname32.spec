@@ -4,7 +4,7 @@
 #
 Name     : compat-opencv-soname32
 Version  : 3.2.0
-Release  : 28
+Release  : 29
 URL      : https://github.com/opencv/opencv/archive/3.2.0.tar.gz
 Source0  : https://github.com/opencv/opencv/archive/3.2.0.tar.gz
 Summary  : Open Source Computer Vision Library
@@ -13,6 +13,7 @@ License  : BSD-3-Clause BSD-3-Clause-Clear JasPer-2.0 LGPL-2.1 Libpng libtiff
 Requires: compat-opencv-soname32-lib = %{version}-%{release}
 Requires: compat-opencv-soname32-license = %{version}-%{release}
 BuildRequires : apache-ant
+BuildRequires : apache-maven
 BuildRequires : buildreq-cmake
 BuildRequires : buildreq-mvn
 BuildRequires : ccache
@@ -43,6 +44,8 @@ BuildRequires : python3-dev
 BuildRequires : tbb-dev
 BuildRequires : v4l-utils-dev
 BuildRequires : zlib-dev
+# Suppress generation of debuginfo
+%global debug_package %{nil}
 Patch1: cve-2017-12600.patch
 Patch2: CVE-2017-1000450.patch
 
@@ -81,7 +84,7 @@ export http_proxy=http://127.0.0.1:9/
 export https_proxy=http://127.0.0.1:9/
 export no_proxy=localhost,127.0.0.1,0.0.0.0
 export LANG=C.UTF-8
-export SOURCE_DATE_EPOCH=1565237815
+export SOURCE_DATE_EPOCH=1567828706
 mkdir -p clr-build
 pushd clr-build
 export GCC_IGNORE_WERROR=1
@@ -97,7 +100,7 @@ make  %{?_smp_mflags} VERBOSE=1
 popd
 
 %install
-export SOURCE_DATE_EPOCH=1565237815
+export SOURCE_DATE_EPOCH=1567828706
 rm -rf %{buildroot}
 mkdir -p %{buildroot}/usr/share/package-licenses/compat-opencv-soname32
 cp 3rdparty/ffmpeg/license.txt %{buildroot}/usr/share/package-licenses/compat-opencv-soname32/3rdparty_ffmpeg_license.txt
